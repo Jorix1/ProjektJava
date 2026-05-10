@@ -1,9 +1,6 @@
 import java.io.*;
 import java.security.AllPermission;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -67,35 +64,87 @@ public class InputOutput {
 
     }
 
-//    public void readFileNodeTxt (File fileNodeTxt, List<Graph.Node> NodeList) throws IOException, IllegalArgumentException {
-//        try(BufferedReader reader = new BufferedReader(new FileReader(fileNodeTxt))) {
-//
-//            int Id;
-//            double X;
-//            double Y;
-//
-//            String line;
-//
-//
-//            int lineNumber = 0;
-//            while ((line = reader.readLine()) != null) {
-//                lineNumber++;
-//                Matcher matcher = patternForNode.matcher(line);
-//
-//                if (matcher.find()) {
-//                    Id = Integer.parseInt(matcher.group(1));
-//                    X = Double.parseDouble(matcher.group(2));
-//                    Y = Double.parseDouble(matcher.group(4));
-//                    NodeList.add(new Graph.Node(Id, X, Y));
-//
-//                } else {
-//                    throw new IOException("Error while loading line nubmer" + lineNumber);
-//                }
-//
-//            }
-//        }
-//    }
-//    public void readFileNodeBinn(File fileEdges, List<Main.Edge> EdgeList) throws Exception {
-//
-//    }
+    public void readFileNodeTxt (File fileNodeTxt, Cords cords) throws IOException, IllegalArgumentException {
+        try(BufferedReader reader = new BufferedReader(new FileReader(fileNodeTxt))) {
+
+            int Id;
+            double X;
+            double Y;
+
+            String line;
+
+
+            int lineNumber = 0;
+            while ((line = reader.readLine()) != null) {
+                lineNumber++;
+                Matcher matcher = patternForNode.matcher(line);
+
+                if (matcher.find()) {
+                    Id = Integer.parseInt(matcher.group(1));
+                    X = Double.parseDouble(matcher.group(2));
+                    Y = Double.parseDouble(matcher.group(4));
+                    cords.set(Id, X, Y);
+
+
+                } else {
+                    throw new IOException("Error while loading line nubmer" + lineNumber);
+                }
+                System.out.printf("Poprawnie odczytano: "+lineNumber+" linii");
+
+            }
+        }
+    }
+    public void readFileNodeBinn(File file, Cords cords) throws Exception {
+        try(DataInputStream reader = new DataInputStream(new BufferedInputStream(new FileInputStream(file)))){
+
+            int lineNumber = 0;
+
+            int Id;
+            double X;
+            double Y;
+
+            while (reader.available() > 0) {
+                lineNumber++;
+
+                Id = reader.readInt();
+                X = reader.readDouble();
+                Y = reader.readDouble();
+                cords.set(Id, X, Y);
+
+            }
+            System.out.printf("Poprawnie odczytano: "+lineNumber+" linii");
+        }catch(FileNotFoundException e){
+            System.err.println("File not found");
+        }
+    }
+
+    public void writeCordsTxt(Cords cords, File file) throws IOException{
+        try(FileWriter writer = new FileWriter(file)){
+            for(int i = 0; i < cords.getN(); i++){
+                writer.write(i +", "+cords.getX(i)+", "+cords.getY(i)+"\n");
+            }
+            System.out.printf("Poprawnie zapisano dane do pliku .txt");
+
+        }catch(IOException e){
+            System.err.println("Error writing output file");
+        }
+
+    }
+    public void wiriteCordsBinary(Cords cords, File file) throws IOException{
+        final int NumberOfCords =  cords.getN();
+
+
+        try(DataOutputStream writer = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(file)))){
+
+            for(int i = 0; i < NumberOfCords; i++){
+                writer.writeInt(i);
+                writer.writeDouble(cords.getX(i));
+                writer.writeDouble(cords.getY(i));
+            }
+
+        }catch(IOException e){
+            System.err.println("Error writing output file in binary");
+
+        }
+    }
 }
