@@ -123,7 +123,7 @@ public class InputOutput {
             for(int i = 0; i < cords.getN(); i++){
                 writer.write(i +", "+cords.getX(i)+", "+cords.getY(i)+"\n");
             }
-            System.out.printf("Poprawnie zapisano dane do pliku .txt");
+            System.out.print("Poprawnie zapisano dane do pliku .txt");
 
         }catch(IOException e){
             System.err.println("Error writing output file");
