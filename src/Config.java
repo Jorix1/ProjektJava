@@ -10,14 +10,14 @@ public class Config {
     private int maxXSize;
     private int maxYSize;
     private String algoName; // from usr
-    private boolean outText;
+    private boolean outputTxt;
 
     public Config(String algoName ,int iterations, int maxXSize, int maxYSize, boolean outText) {
         this.algoName = algoName;
         this.iterations = iterations;
         this.maxXSize = maxXSize;
         this.maxYSize = maxYSize;
-        this.outText = outText;
+        this.outputTxt = outText;
     }
     public Config(){
         this.algoName = algo.get(1); // tutte jest najszybszy to będzie default

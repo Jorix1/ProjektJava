@@ -25,6 +25,11 @@ public class Graph {
             this.adjList.computeIfAbsent(primeNode, k ->new LinkedList<>()).add(new AdjList.adjElement(secondaryNode, weight));
 
         }
+        public LinkedList<AdjList.adjElement> getLinkedList(int primeNode){
+            return this.adjList.get(primeNode);
+        }
+
     }
+
 
 }
