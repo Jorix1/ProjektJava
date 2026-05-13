@@ -5,7 +5,7 @@ public class Tutte {
     private static final double TOLERANCE_SQ = 1e-12;
 
     public void execute(Cords cords, Graph.AdjListAll graph, Set<Integer> fixedNodes) {
-        int n = graph.numNodes;
+        int n = graph.getNumNodes();
         setFixedNodesOnCircle(cords, fixedNodes);
         
         for (int i = 1; i <= n; i++) {

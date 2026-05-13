@@ -12,13 +12,16 @@ public class Graph {
     // AdjAll lista wszystkich nodów oraz ich list sąsiedctwa
     // HashMapa to jest mapa nazwa wierchołka oraz jego linkedLista jets to: nazwa wierchołka, waga -> następny dla tego wierchołka
     public static class AdjListAll{
-        int numNodes;
+        private int numNodes;
         HashMap<Integer,LinkedList<AdjList.adjElement>> adjList;
         public AdjListAll(){
             adjList = new HashMap<>();
         }
         public void setNumNodes(int numNodes){
             this.numNodes = numNodes;
+        }
+        public int getNumNodes(){
+            return numNodes;
         }
         public void AddElementLL(int primeNode, int secondaryNode, double weight){
 

@@ -97,15 +97,15 @@ public class FuchterMann {
         }else return 0;
     }
     public void executeAlgo(Cords cords, Graph.AdjListAll graph){
-
+        int numNodes =  graph.getNumNodes();
         for(int i = 0; i< iterations; i++){
 
             HashMap<Integer, Double[]> ForceList = new HashMap<>();
-            for(int node1 = 0; node1 < graph.numNodes; node1++){
+            for(int node1 = 0; node1 < numNodes; node1++){
                 double FX = 0;
                 double FY = 0;
 
-                for(int node2 = 0; node2 < graph.numNodes; node2++) {// częśc odpychanie
+                for(int node2 = 0; node2 < numNodes; node2++) {// częśc odpychanie
                     if(node1 == node2) continue;
 
                     double distnceX =  getNodesDistanceX(cords, node1, node2);
