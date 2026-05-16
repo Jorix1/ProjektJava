@@ -4,7 +4,7 @@ public class Tutte {
     private static final int MAX_ITERATIONS = 1000;
     private static final double TOLERANCE_SQ = 1e-12;
 
-    public void execute(Cords cords, Graph.AdjListAll graph, Set<Integer> fixedNodes) {
+    public void execute(Cords cords, Graph graph, Set<Integer> fixedNodes) {
         int n = graph.getNumNodes();
         setFixedNodesOnCircle(cords, fixedNodes);
         

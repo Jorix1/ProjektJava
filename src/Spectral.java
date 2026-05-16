@@ -20,7 +20,7 @@ public class Spectral {
         this.maxYSize = maxYSize;
     }
 
-    private double[][] buildLaplaceMatrix(Graph.AdjListAll graph, int numNodes){
+    private double[][] buildLaplaceMatrix(Graph graph, int numNodes){
         double [][] laplaceMatrix =  new double[numNodes][numNodes];
 
         for(int i = 1; i<=numNodes; i++){
@@ -138,7 +138,7 @@ public class Spectral {
 
     }
 
-    public void executeAlgo(Cords cords, Graph.AdjListAll graph){
+    public void executeAlgo(Cords cords, Graph graph){
         int numberOfNodes = graph.getNumNodes();
 
         if(numberOfNodes <= 1) return ;

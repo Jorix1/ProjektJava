@@ -1,3 +1,5 @@
+import java.util.Random;
+
 public class Cords {
     /* plik ten zawiera min:
     alakacje pamięci na tablicę wsp.
@@ -34,6 +36,7 @@ public class Cords {
         ys[v] +=deltaY;
         }
     }
+
     public int getN(){
         return n;
     }

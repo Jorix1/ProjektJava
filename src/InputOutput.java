@@ -17,10 +17,10 @@ public class InputOutput {
     static final String regexForExtract = "(\\w+)\\s+(\\d+)\\s+(\\d+)\\s+([-+]?\\d+(\\.\\d+)?)";
     static Pattern pattern = Pattern.compile(regexForExtract);
     static Pattern patternForNode = Pattern.compile(regexTxt);
-    public Graph.AdjListAll readFileEdge(File file) throws IOException, IllegalArgumentException {
+    public static Graph readFileEdge(File file) throws IOException, IllegalArgumentException {
 
         try(BufferedReader reader = new BufferedReader(new FileReader(file))){
-            Graph.AdjListAll AllLinkedList = new Graph.AdjListAll();
+            Graph AllLinkedList = new Graph();
             String line;
 
             String edgeName;
@@ -58,13 +58,14 @@ public class InputOutput {
                     throw new IOException ("Not found any matches in file line number:"+lineNumber);
                 }
             }
+            AllLinkedList.setNumNodes(AllLinkedList.adjList.size());
             return AllLinkedList;
         }
 
 
     }
 
-    public void readFileNodeTxt (File fileNodeTxt, Cords cords) throws IOException, IllegalArgumentException {
+    public  void readFileNodeTxt (File fileNodeTxt, Cords cords) throws IOException, IllegalArgumentException {
         try(BufferedReader reader = new BufferedReader(new FileReader(fileNodeTxt))) {
 
             int Id;
@@ -92,6 +93,7 @@ public class InputOutput {
                 System.out.printf("Poprawnie odczytano: "+lineNumber+" linii");
 
             }
+
         }
     }
     public void readFileNodeBinn(File file, Cords cords) throws Exception {

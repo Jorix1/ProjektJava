@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Random;
 
 public class FuchterMann {
 
@@ -19,6 +20,16 @@ public class FuchterMann {
         maxXSize = config.getMaxXSize();
         maxYSize = config.getMaxYSize();
     }
+
+    private void setRandomCords(Cords cords){
+        Random random = new Random();
+        for(int i = 1; i <= cords.getN(); i++){
+            double randomX = random.nextDouble()*maxXSize;
+            double randomY = random.nextDouble()*maxYSize;
+            cords.set(i,randomX,randomY );
+        }
+    }
+
 
     public double getHooksConst() {
         return hooksConst;
@@ -96,8 +107,9 @@ public class FuchterMann {
 
         }else return 0;
     }
-    public void executeAlgo(Cords cords, Graph.AdjListAll graph){
+    public  void executeAlgo(Cords cords, Graph graph){
         int numNodes =  graph.getNumNodes();
+        setRandomCords(cords);
         for(int i = 0; i< iterations; i++){
 
             HashMap<Integer, Double[]> ForceList = new HashMap<>();
@@ -121,7 +133,10 @@ public class FuchterMann {
                 }
 
                 LinkedList<AdjList.adjElement> adjList = graph.getLinkedList(node1);
+
+                if (adjList == null || adjList.isEmpty()) continue;
                 for(AdjList.adjElement node2 : adjList){ // częśc przyciąganiem
+
                     if(node1 == node2.nodeName) continue;
 
                     double distnceX =  getNodesDistanceX(cords, node1, node2.nodeName);
