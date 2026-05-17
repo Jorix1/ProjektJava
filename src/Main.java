@@ -7,10 +7,10 @@ import java.util.List;
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
 
-    static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException {
         System.out.println("Java is looking in: " + new java.io.File(".").getAbsolutePath());
         Graph graph = new Graph();
-        graph =  InputOutput.readFileEdge(new File("src/graphDane1.txt"));
+        graph =  InputOutput.readFileEdge(new File("grid900.txt"));
 
         Config config = new Config("fuchtermann",100, 100, 100, true );
 
@@ -18,7 +18,7 @@ public class Main {
         FuchterMann algo = new FuchterMann(config);
         algo.executeAlgo(cords, graph);
 
-        Gui graphWindow = new Gui(cords,graph);
+        Gui graphWindow = new Gui(cords,graph, config);
 
     }
 }
