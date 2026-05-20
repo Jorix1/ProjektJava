@@ -10,7 +10,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
         System.out.println("Java is looking in: " + new java.io.File(".").getAbsolutePath());
         Graph graph = new Graph();
-        graph =  InputOutput.readFileEdge(new File("grid900.txt"));
+        graph =  InputOutput.readFileEdge(new File("src/graphDane1.txt"));
 
         Config config = new Config("fuchtermann",100, 100, 100, true );
 

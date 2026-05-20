@@ -11,6 +11,7 @@ public class Gui {
     private static final Color EDGES_COLOR = Color.red;
     private static final int DIAMITER = 8;
     private static final int RADIUS = DIAMITER/2;
+    private static final int MULTIPLICTION = 10;
     JCheckBox pokazujEtykiety;
     JCheckBox pokazWagi;
    
@@ -65,15 +66,15 @@ public class Gui {
         private void drawEdges(Graphics2D g2D){
             HashSet<String> edges = new HashSet<>();
             for(int key : graph.adjList.keySet()){
-                int keyX = (int) cords.getX(key);
-                int keyY = (int) cords.getY(key);
+                int keyX = (int) (cords.getX(key) * MULTIPLICTION);
+                int keyY = (int) (cords.getY(key) * MULTIPLICTION);
                 if(graph.adjList.get(key) == null) continue;
 
                 for(AdjList.adjElement edge : graph.adjList.get(key)){
                     String edgKey = Math.min(key, edge.nodeName) + "-" + Math.max(key,edge.nodeName);
                     if(!edges.contains(edgKey)) {
-                        int edgeX = (int) cords.getX(edge.nodeName);
-                        int edgeY = (int) cords.getY(edge.nodeName);
+                        int edgeX = (int) (cords.getX(edge.nodeName) * MULTIPLICTION);
+                        int edgeY = (int) (cords.getY(edge.nodeName) * MULTIPLICTION);
                         g2D.drawLine(keyX, keyY, edgeX, edgeY);
                         edges.add(edgKey);
 
@@ -89,8 +90,8 @@ public class Gui {
         }
         private void drawNodes(Graphics2D g2D){
             for(int i = 1; i <=  cords.getN(); i++){
-                int x =  (int) cords.getX(i);
-                int y = (int) cords.getY(i);
+                int x =  (int) (cords.getX(i) * MULTIPLICTION);
+                int y = (int) (cords.getY(i) * MULTIPLICTION);
 
                 g2D.drawOval(x- RADIUS, y- RADIUS, DIAMITER, DIAMITER);
                 if (pokazujEtykiety != null && pokazujEtykiety.isSelected()) {
@@ -123,10 +124,11 @@ public class Gui {
     GraphPanel graphPanel;
 
     public Gui(Cords cords, Graph graph, Config config) {
+        Dimension screenSize =  Toolkit.getDefaultToolkit().getScreenSize();
         frame = new JFrame("Graph View");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(1100, 750);
-        frame.setResizable(false);
+        frame.setSize(screenSize.width, screenSize.height);
+        frame.setResizable(true);
         frame.setLocationRelativeTo(null);
         
         JMenuBar menuBar = new JMenuBar();

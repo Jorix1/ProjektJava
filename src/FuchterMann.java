@@ -6,7 +6,7 @@ import java.util.Random;
 public class FuchterMann {
 
     private  double hooksConst = -0.4;
-    private  double coulombaConst = 20;
+    private  double coulombaConst = 1000;
     private  double temp = 5;
 
     private final int iterations;
@@ -38,9 +38,22 @@ public class FuchterMann {
         return coulombaConst;
     }
     public void setCoulombaConst(double coulombaConst) {
+        if(coulombaConst == 0){
+            System.out.println("coulombaConst can't be  zero and must be positive number");
+
+        } else if (coulombaConst < 0) {
+            this.coulombaConst = -(coulombaConst);
+
+        }
         this.coulombaConst = coulombaConst;
     }
     public void setHooksConst(double hooksConst) {
+        if(hooksConst == 0) {
+            System.err.println("hooksConst cant be equal 0 and it must be negative real number");
+
+        } else if (hooksConst > 0) {
+            this.hooksConst = -(hooksConst);
+        }
         this.hooksConst = hooksConst;
     }
 

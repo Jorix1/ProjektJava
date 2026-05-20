@@ -25,6 +25,7 @@ public class Spectral {
 
         for(int i = 1; i<=numNodes; i++){
             LinkedList<AdjList.adjElement> adjList =  graph.getLinkedList(i);
+            if (adjList == null || adjList.isEmpty()) continue;
             if(!adjList.isEmpty()){
                 for(AdjList.adjElement e: adjList){
                     int vertex = e.nodeName;
