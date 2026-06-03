@@ -22,8 +22,8 @@ public class Config {
     public Config(){
         this.algoName = algo.get(1); // tutte jest najszybszy to będzie default
         this.iterations = 500;
-        this.maxXSize = 200; // wartość dodatnia i ujemna
-        this.maxYSize = 200; // to samo
+        this.maxXSize = 1000; // wartość dodatnia i ujemna
+        this.maxYSize = 1000; // to samo
     }
     public Config(String [] args){
         String name = "";

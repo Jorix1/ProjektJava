@@ -5,9 +5,10 @@ import java.util.Random;
 
 public class FuchterMann {
 
-    private  double hooksConst = -0.4;
-    private  double coulombaConst = 1000;
-    private  double temp = 5;
+    private  double hooksConst = -0.1;
+    private  double coulombaConst = 1.5;
+    private  double tempX = 100;
+    private  double tempY = 100;
 
     private final int iterations;
     private final int maxXSize;
@@ -19,6 +20,8 @@ public class FuchterMann {
         iterations = config.getIterations();
         maxXSize = config.getMaxXSize();
         maxYSize = config.getMaxYSize();
+        tempX = maxXSize/4;
+        tempY = maxYSize/4;
     }
 
     private void setRandomCords(Cords cords){
@@ -57,15 +60,11 @@ public class FuchterMann {
         this.hooksConst = hooksConst;
     }
 
-
-
-
     private double getNodesDistanceX(Cords cords, int NodeID1, int NodeID2){
         if(NodeID1 == NodeID2) return 0;
         double distance = 0;
 
         distance = cords.getX(NodeID1) - cords.getX(NodeID2);
-
 
         return distance;
     }
@@ -79,7 +78,6 @@ public class FuchterMann {
 
         return distance;
     }
-
     private double getNodesDistanceXYSq(double distanceX, double distanceY){
         double distance = 0;
 
@@ -88,18 +86,14 @@ public class FuchterMann {
         return distance;
     }
 
-
     private double getAttractionForceX(double distanceX){
 
         return hooksConst * distanceX;
     }
-
     private double getAttractionForceY(double distanceY){
 
         return hooksConst * distanceY;
     }
-
-
 
     private double getRepulsionForceX(double distanceX, double distanceXYSq){
         double repulsionForce = 0;
@@ -110,7 +104,6 @@ public class FuchterMann {
 
         }else return 0;
     }
-
     private double getRepulsionForceY(double distanceY, double distanceXYSq){
         double repulsionForce = 0;
 
@@ -120,23 +113,28 @@ public class FuchterMann {
 
         }else return 0;
     }
+
     public  void executeAlgo(Cords cords, Graph graph){
         int numNodes =  graph.getNumNodes();
         setRandomCords(cords);
         for(int i = 0; i< iterations; i++){
 
             HashMap<Integer, Double[]> ForceList = new HashMap<>();
-            for(int node1 = 0; node1 < numNodes; node1++){
+            for(int node1 = 1; node1 <= numNodes; node1++){
                 double FX = 0;
                 double FY = 0;
 
-                for(int node2 = 0; node2 < numNodes; node2++) {// częśc odpychanie
+                for(int node2 = 1; node2 <= numNodes; node2++) {// częśc odpychanie
                     if(node1 == node2) continue;
 
                     double distnceX =  getNodesDistanceX(cords, node1, node2);
                     double distnceY =  getNodesDistanceY(cords, node1, node2);
                     double distanceXYSq = getNodesDistanceXYSq(distnceX, distnceY);
-
+                    if(distanceXYSq < 0.0001) {
+                        distnceX = Math.random() * 0.1;
+                        distnceY = Math.random() * 0.1;
+                        distanceXYSq = distnceX * distnceX + distnceY * distnceY;
+                    }
                     double repForceX = getRepulsionForceX(distnceX, distanceXYSq);
                     double repForceY = getRepulsionForceY(distnceY, distanceXYSq);
 
@@ -163,17 +161,28 @@ public class FuchterMann {
                     FY += attrForceY;
 
                 }
-                FX *= temp;
-                FY *= temp;
+
 
                 ForceList.put(node1, new Double[]{FX,FY});
 
             }
             for(int node1 : ForceList.keySet()){
+                double newNode1CordsX = cords.getX(node1);
+                double newNode1CordsY = cords.getY(node1);
 
-                double newNode1CordsX = cords.getX(node1) + ForceList.get(node1)[0];
-                double newNode1CordsY = cords.getY(node1) + ForceList.get(node1)[1];
+                if(Math.abs(ForceList.get(node1)[0]) > tempX){
+                    newNode1CordsX += ForceList.get(node1)[0] > 0 ? tempX : -tempX;
+                }else {
+                    newNode1CordsX += ForceList.get(node1)[0];
+                }
 
+                if(Math.abs(ForceList.get(node1)[1]) > tempY){
+                    newNode1CordsY += ForceList.get(node1)[1] > 0 ? tempY : -tempY;
+                }else {
+                    newNode1CordsY += ForceList.get(node1)[1];
+                }
+
+                newNode1CordsY = cords.getY(node1) + ForceList.get(node1)[1];
                 if(Math.abs(newNode1CordsX)> maxXSize){
                     newNode1CordsX = newNode1CordsX > 0 ? maxXSize : -maxXSize;
                 }
@@ -183,7 +192,8 @@ public class FuchterMann {
                 cords.set(node1, newNode1CordsX, newNode1CordsY);
 
             }
-            temp *= 0.95;
+            tempX *= 0.95;
+            tempY *= 0.95;
         }
 
     }

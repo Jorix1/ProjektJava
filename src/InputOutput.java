@@ -120,19 +120,20 @@ public class InputOutput {
         }
     }
 
-    public void writeCordsTxt(Cords cords, File file) throws IOException{
+    public static void writeCordsTxt(Cords cords, File file) throws IOException{
         try(FileWriter writer = new FileWriter(file)){
             for(int i = 0; i < cords.getN(); i++){
                 writer.write(i +", "+cords.getX(i)+", "+cords.getY(i)+"\n");
             }
             System.out.print("Poprawnie zapisano dane do pliku .txt");
 
+
         }catch(IOException e){
             System.err.println("Error writing output file");
         }
 
     }
-    public void wiriteCordsBinary(Cords cords, File file) throws IOException{
+    public static void wiriteCordsBinary(Cords cords, File file) throws IOException{
         final int NumberOfCords =  cords.getN();
 
 
