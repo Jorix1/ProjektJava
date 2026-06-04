@@ -12,7 +12,7 @@ public class Main {
         Graph graph = new Graph();
         graph =  InputOutput.readFileEdge(new File("src/grid400.txt"));
 
-        Config config = new Config("fuchtermann",100, 1000, 1000, true );
+        Config config = new Config("fuchtermann",100, 1000, 1000 );
 
         Cords cords = new Cords(graph.getNumNodes());
         FuchterMann algo = new FuchterMann(config);

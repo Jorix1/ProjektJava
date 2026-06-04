@@ -13,7 +13,7 @@ public class InputOutput {
     zapisywanie wps do binarki
      */
 
-    static final String regexTxt = "(\\d+)\\s+([-+]?\\d+(\\.\\d+)?)\\s+([-+]?\\d+(\\.\\d+)?)";
+    static final String regexTxt = "(\\d+),\\s+([-+]?\\d+(\\.\\d+)?),\\s+([-+]?\\d+(\\.\\d+)?)";
     static final String regexForExtract = "(\\w+)\\s+(\\d+)\\s+(\\d+)\\s+([-+]?\\d+(\\.\\d+)?)";
     static Pattern pattern = Pattern.compile(regexForExtract);
     static Pattern patternForNode = Pattern.compile(regexTxt);
@@ -65,7 +65,7 @@ public class InputOutput {
 
     }
 
-    public  void readFileNodeTxt (File fileNodeTxt, Cords cords) throws IOException, IllegalArgumentException {
+    public static void readFileNodeTxt (File fileNodeTxt, Cords cords) throws IOException, IllegalArgumentException {
         try(BufferedReader reader = new BufferedReader(new FileReader(fileNodeTxt))) {
 
             int Id;
@@ -85,10 +85,10 @@ public class InputOutput {
                     X = Double.parseDouble(matcher.group(2));
                     Y = Double.parseDouble(matcher.group(4));
                     cords.set(Id, X, Y);
-
+                    System.out.println(Id + " " + X + " " + Y);
 
                 } else {
-                    throw new IOException("Error while loading line nubmer" + lineNumber);
+                    throw new IOException("Error while loading line nubmer: " + lineNumber);
                 }
                 System.out.printf("Poprawnie odczytano: "+lineNumber+" linii");
 
@@ -96,7 +96,7 @@ public class InputOutput {
 
         }
     }
-    public void readFileNodeBinn(File file, Cords cords) throws Exception {
+    public static void readFileNodeBinn(File file, Cords cords) throws Exception {
         try(DataInputStream reader = new DataInputStream(new BufferedInputStream(new FileInputStream(file)))){
 
             int lineNumber = 0;
@@ -122,8 +122,8 @@ public class InputOutput {
 
     public static void writeCordsTxt(Cords cords, File file) throws IOException{
         try(FileWriter writer = new FileWriter(file)){
-            for(int i = 0; i < cords.getN(); i++){
-                writer.write(i +", "+cords.getX(i)+", "+cords.getY(i)+"\n");
+            for(int i = 1; i <= cords.getN(); i++){
+                writer.write(i +", "+cords.getX(i)+",  "+cords.getY(i)+"\n");
             }
             System.out.print("Poprawnie zapisano dane do pliku .txt");
 
@@ -139,7 +139,7 @@ public class InputOutput {
 
         try(DataOutputStream writer = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(file)))){
 
-            for(int i = 0; i < NumberOfCords; i++){
+            for(int i = 1; i <= NumberOfCords; i++){
                 writer.writeInt(i);
                 writer.writeDouble(cords.getX(i));
                 writer.writeDouble(cords.getY(i));

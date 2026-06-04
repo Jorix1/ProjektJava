@@ -16,7 +16,32 @@ public class Gui {
     JCheckBox pokazWagi;
     JFrame frame;
     GraphPanel graphPanel;
+    private File choseFile(){
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setCurrentDirectory(new File("."));
+        int resultFileEdge = fileChooser.showOpenDialog(frame);
+        if (resultFileEdge == JFileChooser.APPROVE_OPTION  ) {
+            File selectedFile = fileChooser.getSelectedFile();
+            return selectedFile;
+        }else{
+            JOptionPane.showMessageDialog(frame, "Podany plik nie spełnia norm!", "Błąd", JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
+    }
+    private int popUpWindow(String message){
+        String numberBase = JOptionPane.showInputDialog(message);
+        int number = 0;
+        try{
+            number = Integer.parseInt(numberBase.trim());
 
+            if(number <= 0 ) return 0;
+            else return number;
+        }catch (NumberFormatException e){
+            JOptionPane.showMessageDialog(frame, "Podano nie prawidłowy number", "Error", JOptionPane.ERROR_MESSAGE);
+            return 0;
+        }
+
+    }
     public Gui(Cords cords, Graph graph, Config config) {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         frame = new JFrame("Graph View");
@@ -29,17 +54,32 @@ public class Gui {
         JMenuBar menuBar = new JMenuBar();
         JMenu menuPlik = new JMenu("Plik");
 
-        JMenuItem otworzTekstowy = new JMenuItem("Wczytaj tekstowy (.txt)");
-        JMenuItem otworzBinarny = new JMenuItem("Wczytaj binarny (.bin)");
+        JMenuItem otworzTekstowy = new JMenuItem("Wczytaj plik z krawędziami (.txt)");
+        JMenuItem otworzNodeTxt = new JMenuItem("Wczytaj plik z wierzchołkami (.txt)");
+        JMenuItem otworzNodeBin  = new JMenuItem("Wczytaj plik z wierzchołkami (.bin)");
         JMenuItem zapiszWynikTxt = new JMenuItem("Zapisz współrzędne w formacie .txt");
         JMenuItem zapiszWynikBin = new JMenuItem("Zapisz współrzędne w formacie .bin");
 
         menuPlik.add(otworzTekstowy);
-        menuPlik.add(otworzBinarny);
+        menuPlik.add(otworzNodeTxt);
+        menuPlik.add(otworzNodeBin);
         menuPlik.add(zapiszWynikTxt);
         menuPlik.add(zapiszWynikBin);
 
         menuBar.add(menuPlik);
+
+        JMenu menuConfig = new JMenu("Config");
+        JMenuItem liczbaIteracji = new JMenuItem("Liczba iteracji: " + config.getIterations() );
+        JMenuItem maxBordX = new JMenuItem("maskymalna szerokość planszy: " + config.getMaxXSize() );
+        JMenuItem maxBordY = new JMenuItem("maskymalna wysokość planszy: " + config.getMaxYSize() );
+
+        menuConfig.add(liczbaIteracji);
+        menuConfig.add(maxBordX);
+        menuConfig.add(maxBordY);
+
+
+        menuBar.add(menuConfig);
+
 
         frame.setJMenuBar(menuBar);
 
@@ -116,6 +156,9 @@ public class Gui {
                 graphPanel.repaint();
             }
         });
+
+
+        // wczytywanie oraz zapisywanie
         otworzTekstowy.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -146,7 +189,79 @@ public class Gui {
                 }
             }
         });
+        otworzNodeTxt.addActionListener(new ActionListener() {
 
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                try {
+                    JOptionPane.showMessageDialog(frame, "Podaj plik z krawędziami", "Wczytaj", JOptionPane.INFORMATION_MESSAGE);
+
+                    File selectedFile = choseFile();
+
+                    if (selectedFile == null) return;
+                    Graph nowyGraph = InputOutput.readFileEdge(selectedFile);
+                    graphPanel.graph = nowyGraph;
+
+                    JOptionPane.showMessageDialog(frame, "Podaj plik z wierzchołkami format Txt", "Wczytaj", JOptionPane.INFORMATION_MESSAGE);
+
+                    selectedFile = choseFile();
+                    System.out.println(selectedFile);
+                    if (selectedFile == null) return;
+                    Cords nowyCords = new Cords(nowyGraph.getNumNodes());
+                    InputOutput.readFileNodeTxt(selectedFile, nowyCords);
+                    graphPanel.cords = nowyCords;
+
+
+
+                    JOptionPane.showMessageDialog(frame, "Pomyślnie wczytano graf!", "Sukces", JOptionPane.INFORMATION_MESSAGE);
+
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(frame, "Błąd podczas wczytywania pliku:\n" + ex.getMessage(), "Błąd", JOptionPane.ERROR_MESSAGE);
+                    ex.printStackTrace();
+                }
+                graphPanel.repaint();
+
+
+
+            }
+        });
+        otworzNodeBin.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                try {
+                    JOptionPane.showMessageDialog(frame, "Podaj plik z krawędziami", "Wczytaj", JOptionPane.INFORMATION_MESSAGE);
+
+                    File selectedFile = choseFile();
+
+                    if (selectedFile == null) return;
+                    Graph nowyGraph = InputOutput.readFileEdge(selectedFile);
+                    graphPanel.graph = nowyGraph;
+
+                    JOptionPane.showMessageDialog(frame, "Podaj plik z wierzchołakmi format Bin", "Wczytaj", JOptionPane.INFORMATION_MESSAGE);
+
+                    selectedFile = choseFile();
+                    System.out.println(selectedFile);
+                    if (selectedFile == null) return;
+                    Cords nowyCords = new Cords(nowyGraph.getNumNodes());
+                    InputOutput.readFileNodeBinn(selectedFile, nowyCords);
+                    graphPanel.cords = nowyCords;
+
+
+
+                    JOptionPane.showMessageDialog(frame, "Pomyślnie wczytano graf!", "Sukces", JOptionPane.INFORMATION_MESSAGE);
+
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(frame, "Błąd podczas wczytywania pliku:\n" + ex.getMessage(), "Błąd", JOptionPane.ERROR_MESSAGE);
+                    ex.printStackTrace();
+                }
+                graphPanel.repaint();
+
+
+
+            }
+        });
         zapiszWynikTxt.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -201,6 +316,47 @@ public class Gui {
                 } else {
                     JOptionPane.showMessageDialog(frame, "Błąd podczas wczytywania pliku:\n Plik nie zatweirdzony do zapisu\n", "Błąd", JOptionPane.ERROR_MESSAGE);
 
+                }
+            }
+        });
+
+        // konfig app l iteracji oraz max rozmiar planszy
+        liczbaIteracji.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int numberInterationNew = popUpWindow("Podaj liczbę itearcji algorytmu");
+                if(numberInterationNew == 0) JOptionPane.showMessageDialog(frame, "Podano złą liczbę iteracji liczba pozostaje taka sama ", "Info", JOptionPane.INFORMATION_MESSAGE);
+
+                else {
+                    config.setIterations(numberInterationNew);
+                    liczbaIteracji.setText("Liczba iteracji: " + config.getIterations());
+                }
+            }
+        });
+        maxBordX.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int maxXNew = popUpWindow("Podaj maxymalaną szerokość planszy");
+                if(maxXNew == 0) JOptionPane.showMessageDialog(frame, "Podano złą szerokość, pozostaje taka sama ", "Info", JOptionPane.INFORMATION_MESSAGE);
+
+                else {
+                    config.setMaxXSize(maxXNew);
+                    maxBordX.setText("maskymalna szerokość planszy: " + config.getMaxXSize());
+                }
+            }
+        });
+        maxBordY.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int maxYNew = popUpWindow("Podaj maxymalaną szerokość planszy");
+                if(maxYNew == 0) JOptionPane.showMessageDialog(frame, "Podano złą szerokość, pozostaje taka sama ", "Info", JOptionPane.INFORMATION_MESSAGE);
+
+                else {
+                    config.setMaxYSize(maxYNew);
+                    maxBordY.setText("maskymalna szerokość planszy: " + config.getMaxYSize());
                 }
             }
         });
