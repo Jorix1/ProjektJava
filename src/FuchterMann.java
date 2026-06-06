@@ -5,8 +5,8 @@ import java.util.Random;
 
 public class FuchterMann {
 
-    private  double hooksConst = -0.1;
-    private  double coulombaConst = 1.5;
+    private double hooksConst;
+    private double columbConst;
     private  double tempX = 100;
     private  double tempY = 100;
 
@@ -22,6 +22,9 @@ public class FuchterMann {
         maxYSize = config.getMaxYSize();
         tempX = maxXSize/4;
         tempY = maxYSize/4;
+
+        hooksConst = config.getHooksConst();
+        columbConst = config.getCoulombaConst();
     }
 
     private void setRandomCords(Cords cords){
@@ -34,31 +37,7 @@ public class FuchterMann {
     }
 
 
-    public double getHooksConst() {
-        return hooksConst;
-    }
-    public double getColumbConst() {
-        return coulombaConst;
-    }
-    public void setCoulombaConst(double coulombaConst) {
-        if(coulombaConst == 0){
-            System.out.println("coulombaConst can't be  zero and must be positive number");
 
-        } else if (coulombaConst < 0) {
-            this.coulombaConst = -(coulombaConst);
-
-        }
-        this.coulombaConst = coulombaConst;
-    }
-    public void setHooksConst(double hooksConst) {
-        if(hooksConst == 0) {
-            System.err.println("hooksConst cant be equal 0 and it must be negative real number");
-
-        } else if (hooksConst > 0) {
-            this.hooksConst = -(hooksConst);
-        }
-        this.hooksConst = hooksConst;
-    }
 
     private double getNodesDistanceX(Cords cords, int NodeID1, int NodeID2){
         if(NodeID1 == NodeID2) return 0;
@@ -99,7 +78,7 @@ public class FuchterMann {
         double repulsionForce = 0;
 
         if(distanceXYSq > 0.0001) {
-            repulsionForce = (getColumbConst() *distanceX) / distanceXYSq;
+            repulsionForce = (columbConst *distanceX) / distanceXYSq;
             return repulsionForce;
 
         }else return 0;
@@ -108,7 +87,7 @@ public class FuchterMann {
         double repulsionForce = 0;
 
         if(distanceXYSq > 0.0001) {
-            repulsionForce = (getColumbConst() *distanceY) / distanceXYSq;
+            repulsionForce = (columbConst *distanceY) / distanceXYSq;
             return repulsionForce;
 
         }else return 0;

@@ -11,7 +11,8 @@ public class Gui {
     private static final Color EDGES_COLOR = Color.red;
     private static final int DIAMITER = 8;
     private static final int RADIUS = DIAMITER / 2;
-    private static final int MULTIPLICTION = 1;
+    private double MULTIPLICTION = 1;
+
     JCheckBox pokazujEtykiety;
     JCheckBox pokazWagi;
     JFrame frame;
@@ -28,7 +29,7 @@ public class Gui {
             return null;
         }
     }
-    private int popUpWindow(String message){
+    private int IpopUpWindow(String message){
         String numberBase = JOptionPane.showInputDialog(message);
         int number = 0;
         try{
@@ -36,6 +37,18 @@ public class Gui {
 
             if(number <= 0 ) return 0;
             else return number;
+        }catch (NumberFormatException e){
+            JOptionPane.showMessageDialog(frame, "Podano nie prawidłowy number", "Error", JOptionPane.ERROR_MESSAGE);
+            return 0;
+        }
+
+    }
+    private double DpopUpWindow(String message){
+        String numberBase = JOptionPane.showInputDialog(message);
+        double number = 0;
+        try{
+            number = Double.parseDouble(numberBase.trim());
+            return number;
         }catch (NumberFormatException e){
             JOptionPane.showMessageDialog(frame, "Podano nie prawidłowy number", "Error", JOptionPane.ERROR_MESSAGE);
             return 0;
@@ -72,13 +85,24 @@ public class Gui {
         JMenuItem liczbaIteracji = new JMenuItem("Liczba iteracji: " + config.getIterations() );
         JMenuItem maxBordX = new JMenuItem("maskymalna szerokość planszy: " + config.getMaxXSize() );
         JMenuItem maxBordY = new JMenuItem("maskymalna wysokość planszy: " + config.getMaxYSize() );
+        JMenuItem multiplikator = new JMenuItem("Mnożnik współrzędnych: "+ MULTIPLICTION);
 
         menuConfig.add(liczbaIteracji);
         menuConfig.add(maxBordX);
         menuConfig.add(maxBordY);
-
+        menuConfig.add(multiplikator);
 
         menuBar.add(menuConfig);
+
+        JMenu menuZmienne = new JMenu("Zmienne");
+        JMenuItem odpychanieFuch = new JMenuItem();
+        JMenuItem przyciaganieFuch = new JMenuItem();
+
+        menuZmienne.add(odpychanieFuch);
+        menuZmienne.add(przyciaganieFuch);
+
+        menuBar.add(menuZmienne);
+        menuZmienne.setVisible(false);
 
 
         frame.setJMenuBar(menuBar);
@@ -146,17 +170,40 @@ public class Gui {
                 } else if ("Fruchterman-Reingold".equals(wybranyAlgo)) {
                     System.out.println("Odpalam Fruchterman-Reingold...");
                     FuchterMann fuchterAlgo = new FuchterMann(config);
+
+
+
+
+
                     fuchterAlgo.executeAlgo(graphPanel.cords, graphPanel.graph);
 
                 } else if ("Spectral Algorithm".equals(wybranyAlgo)) {
                     System.out.println("Odplama Spectral...");
                     Spectral specAlgo = new Spectral(config.getIterations(), config.getMaxXSize(), config.getMaxYSize());
                     specAlgo.executeAlgo(graphPanel.cords, graphPanel.graph);
+
                 }
                 graphPanel.repaint();
             }
         });
 
+        algoBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String wybranyAlgo = (String) algoBox.getSelectedItem();
+
+                if ("Fruchterman-Reingold".equals(wybranyAlgo)) {
+                    odpychanieFuch.setText("Stała odpychania to: "+ config.getCoulombaConst());
+                    przyciaganieFuch.setText("Stała przyciągania to: "+ config.getHooksConst());
+                    menuZmienne.setVisible(true);
+                } else {
+                    menuZmienne.setVisible(false);
+                }
+
+                toolPanel.revalidate();
+                toolPanel.repaint();
+            }
+        });
 
         // wczytywanie oraz zapisywanie
         otworzTekstowy.addActionListener(new ActionListener() {
@@ -325,7 +372,7 @@ public class Gui {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                int numberInterationNew = popUpWindow("Podaj liczbę itearcji algorytmu");
+                int numberInterationNew = IpopUpWindow("Podaj liczbę itearcji algorytmu");
                 if(numberInterationNew == 0) JOptionPane.showMessageDialog(frame, "Podano złą liczbę iteracji liczba pozostaje taka sama ", "Info", JOptionPane.INFORMATION_MESSAGE);
 
                 else {
@@ -334,11 +381,24 @@ public class Gui {
                 }
             }
         });
+        multiplikator.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                double multi = DpopUpWindow("Podaj nową stałą przyciągania");
+
+                if (Math.abs(multi) < 0.001) {
+                    JOptionPane.showMessageDialog(frame, "Podana liczba: " + multi + " nie może zostać ustawiona jako stała", "Błąd", JOptionPane.INFORMATION_MESSAGE);
+                } else{
+                    MULTIPLICTION = multi;
+                    multiplikator.setText("Mnożnik współrzędnych: "+ MULTIPLICTION);
+                }
+            }
+        });
         maxBordX.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                int maxXNew = popUpWindow("Podaj maxymalaną szerokość planszy");
+                int maxXNew = IpopUpWindow("Podaj maxymalaną szerokość planszy");
                 if(maxXNew == 0) JOptionPane.showMessageDialog(frame, "Podano złą szerokość, pozostaje taka sama ", "Info", JOptionPane.INFORMATION_MESSAGE);
 
                 else {
@@ -351,12 +411,40 @@ public class Gui {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                int maxYNew = popUpWindow("Podaj maxymalaną szerokość planszy");
+                int maxYNew = IpopUpWindow("Podaj maxymalaną szerokość planszy");
                 if(maxYNew == 0) JOptionPane.showMessageDialog(frame, "Podano złą szerokość, pozostaje taka sama ", "Info", JOptionPane.INFORMATION_MESSAGE);
 
                 else {
                     config.setMaxYSize(maxYNew);
                     maxBordY.setText("maskymalna szerokość planszy: " + config.getMaxYSize());
+                }
+            }
+        });
+
+        // stałe fuchtermann
+        przyciaganieFuch.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                double stalaPrzy = DpopUpWindow("Podaj nową stałą przyciągania");
+
+                if (stalaPrzy == 0) {
+                    JOptionPane.showMessageDialog(frame, "Podana liczba: " + stalaPrzy + " nie może zostać ustawiona jako stała", "Błąd", JOptionPane.INFORMATION_MESSAGE);
+                } else{
+                    config.setHooksConst(stalaPrzy); // nie trzeba się gimnastykować już jest sprawdzanie w metodzie
+                    przyciaganieFuch.setText("Stała przyciągania to: " + config.getHooksConst());
+                }
+            }
+        });
+        odpychanieFuch.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                double stalaOdp = DpopUpWindow("Podaj nową stałą odpychania");
+
+                if (stalaOdp == 0){
+                    JOptionPane.showMessageDialog(frame, "Podana liczba: "+ stalaOdp + " nie może zostać ustawiona jako stała", "Błąd", JOptionPane.INFORMATION_MESSAGE);
+                }else {
+                    config.setCoulombaConst(stalaOdp); // nie trzeba się gimnastykować już jest sprawdzanie w metodzie
+                    odpychanieFuch.setText("Stała odpychania to: " + config.getCoulombaConst());
                 }
             }
         });
