@@ -40,4 +40,14 @@ public class Cords {
     public int getN(){
         return n;
     }
+    public void setX(int nodeId, double newX){
+        if(nodeId >= 1 && nodeId <= n){
+            this.xs[nodeId] = newX;
+        }
+    }
+    public void setY(int nodeId, double newY){
+        if(nodeId >= 1 && nodeId <=n){
+            this.ys[nodeId] = newY;
+        }
+    }
 }

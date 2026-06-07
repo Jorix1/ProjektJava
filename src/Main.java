@@ -3,20 +3,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
 
     public static void main(String[] args) throws IOException {
         System.out.println("Java is looking in: " + new java.io.File(".").getAbsolutePath());
         Graph graph = new Graph();
-        graph =  InputOutput.readFileEdge(new File("src/grid400.txt"));
+        
 
         Config config = new Config("fuchtermann",100, 1000, 1000 );
 
-        Cords cords = new Cords(graph.getNumNodes());
-        FuchterMann algo = new FuchterMann(config);
-        algo.executeAlgo(cords, graph);
+        Cords cords = new Cords(0);
 
         Gui graphWindow = new Gui(cords,graph, config);
 
