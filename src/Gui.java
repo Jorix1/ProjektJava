@@ -1,9 +1,9 @@
 import javax.swing.*;
 import java.awt.*;
-import java.util.HashSet;
-import java.util.Set;
 import java.awt.event.*;
 import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Gui {
     private static final Color BACKGROUND_COLOR = Color.white;
@@ -11,50 +11,12 @@ public class Gui {
     private static final Color EDGES_COLOR = Color.red;
     private static final int DIAMITER = 8;
     private static final int RADIUS = DIAMITER / 2;
-    private double MULTIPLICTION = 1;
-
     JCheckBox pokazujEtykiety;
     JCheckBox pokazWagi;
     JFrame frame;
     GraphPanel graphPanel;
-    private File choseFile(){
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setCurrentDirectory(new File("."));
-        int resultFileEdge = fileChooser.showOpenDialog(frame);
-        if (resultFileEdge == JFileChooser.APPROVE_OPTION  ) {
-            File selectedFile = fileChooser.getSelectedFile();
-            return selectedFile;
-        }else{
-            JOptionPane.showMessageDialog(frame, "Podany plik nie spełnia norm!", "Błąd", JOptionPane.ERROR_MESSAGE);
-            return null;
-        }
-    }
-    private int IpopUpWindow(String message){
-        String numberBase = JOptionPane.showInputDialog(message);
-        int number = 0;
-        try{
-            number = Integer.parseInt(numberBase.trim());
+    private double MULTIPLICTION = 1;
 
-            if(number <= 0 ) return 0;
-            else return number;
-        }catch (NumberFormatException e){
-            JOptionPane.showMessageDialog(frame, "Podano nie prawidłowy number", "Error", JOptionPane.ERROR_MESSAGE);
-            return 0;
-        }
-
-    }
-    private double DpopUpWindow(String message){
-        String numberBase = JOptionPane.showInputDialog(message);
-        double number = 0;
-        try{
-            number = Double.parseDouble(numberBase.trim());
-            return number;
-        }catch (NumberFormatException e){
-            JOptionPane.showMessageDialog(frame, "Podano nie prawidłowy number", "Error", JOptionPane.ERROR_MESSAGE);
-            return 0;
-        }
-
-    }
     public Gui(Cords cords, Graph graph, Config config) {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         frame = new JFrame("Graph View");
@@ -69,7 +31,7 @@ public class Gui {
 
         JMenuItem otworzTekstowy = new JMenuItem("Wczytaj plik z krawędziami (.txt)");
         JMenuItem otworzNodeTxt = new JMenuItem("Wczytaj plik z wierzchołkami (.txt)");
-        JMenuItem otworzNodeBin  = new JMenuItem("Wczytaj plik z wierzchołkami (.bin)");
+        JMenuItem otworzNodeBin = new JMenuItem("Wczytaj plik z wierzchołkami (.bin)");
         JMenuItem zapiszWynikTxt = new JMenuItem("Zapisz współrzędne w formacie .txt");
         JMenuItem zapiszWynikBin = new JMenuItem("Zapisz współrzędne w formacie .bin");
 
@@ -82,10 +44,10 @@ public class Gui {
         menuBar.add(menuPlik);
 
         JMenu menuConfig = new JMenu("Config");
-        JMenuItem liczbaIteracji = new JMenuItem("Liczba iteracji: " + config.getIterations() );
-        JMenuItem maxBordX = new JMenuItem("maskymalna szerokość planszy: " + config.getMaxXSize() );
-        JMenuItem maxBordY = new JMenuItem("maskymalna wysokość planszy: " + config.getMaxYSize() );
-        JMenuItem multiplikator = new JMenuItem("Mnożnik współrzędnych: "+ MULTIPLICTION);
+        JMenuItem liczbaIteracji = new JMenuItem("Liczba iteracji: " + config.getIterations());
+        JMenuItem maxBordX = new JMenuItem("maskymalna szerokość planszy: " + config.getMaxXSize());
+        JMenuItem maxBordY = new JMenuItem("maskymalna wysokość planszy: " + config.getMaxYSize());
+        JMenuItem multiplikator = new JMenuItem("Mnożnik współrzędnych: " + MULTIPLICTION);
 
         menuConfig.add(liczbaIteracji);
         menuConfig.add(maxBordX);
@@ -114,7 +76,7 @@ public class Gui {
         JPanel toolPanel = new JPanel();
         toolPanel.setLayout(new BoxLayout(toolPanel, BoxLayout.Y_AXIS));
         toolPanel.setBorder(BorderFactory.createTitledBorder("Panel Narzędziowy"));
-        toolPanel.setPreferredSize(new Dimension(screenSize.width/5, screenSize.height/-100));
+        toolPanel.setPreferredSize(new Dimension(screenSize.width / 5, screenSize.height / -100));
         String[] algorytmy = {"Tutte's Algorithm", "Fruchterman-Reingold", "Spectral Algorithm"};
 
         JComboBox<String> algoBox = new JComboBox<>(algorytmy);
@@ -172,9 +134,6 @@ public class Gui {
                     FuchterMann fuchterAlgo = new FuchterMann(config);
 
 
-
-
-
                     fuchterAlgo.executeAlgo(graphPanel.cords, graphPanel.graph);
 
                 } else if ("Spectral Algorithm".equals(wybranyAlgo)) {
@@ -193,8 +152,8 @@ public class Gui {
                 String wybranyAlgo = (String) algoBox.getSelectedItem();
 
                 if ("Fruchterman-Reingold".equals(wybranyAlgo)) {
-                    odpychanieFuch.setText("Stała odpychania to: "+ config.getCoulombaConst());
-                    przyciaganieFuch.setText("Stała przyciągania to: "+ config.getHooksConst());
+                    odpychanieFuch.setText("Stała odpychania to: " + config.getCoulombaConst());
+                    przyciaganieFuch.setText("Stała przyciągania to: " + config.getHooksConst());
                     menuZmienne.setVisible(true);
                 } else {
                     menuZmienne.setVisible(false);
@@ -210,7 +169,7 @@ public class Gui {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JFileChooser fileChooser = new JFileChooser();
-                fileChooser.setCurrentDirectory(new File("."));
+                fileChooser.setCurrentDirectory(new File(".\\src\\DaneIn"));
 
                 int result = fileChooser.showOpenDialog(frame);
 
@@ -260,7 +219,6 @@ public class Gui {
                     graphPanel.cords = nowyCords;
 
 
-
                     JOptionPane.showMessageDialog(frame, "Pomyślnie wczytano graf!", "Sukces", JOptionPane.INFORMATION_MESSAGE);
 
                 } catch (Exception ex) {
@@ -268,7 +226,6 @@ public class Gui {
                     ex.printStackTrace();
                 }
                 graphPanel.repaint();
-
 
 
             }
@@ -296,7 +253,6 @@ public class Gui {
                     graphPanel.cords = nowyCords;
 
 
-
                     JOptionPane.showMessageDialog(frame, "Pomyślnie wczytano graf!", "Sukces", JOptionPane.INFORMATION_MESSAGE);
 
                 } catch (Exception ex) {
@@ -304,7 +260,6 @@ public class Gui {
                     ex.printStackTrace();
                 }
                 graphPanel.repaint();
-
 
 
             }
@@ -318,15 +273,15 @@ public class Gui {
                 }
 
                 JFileChooser fileChooser = new JFileChooser();
-                fileChooser.setCurrentDirectory(new File("."));
+                fileChooser.setCurrentDirectory(new File(".\\src\\DaneOut"));
                 fileChooser.setSelectedFile(new File("wynik_cords.txt"));
 
                 int result = fileChooser.showSaveDialog(frame);
 
                 if (result == JFileChooser.APPROVE_OPTION) {
                     File targetFile = fileChooser.getSelectedFile();
-                    try (java.io.PrintWriter writer = new java.io.PrintWriter(targetFile)) {
-                        InputOutput.writeCordsTxt(cords, targetFile);
+                    try {
+                        InputOutput.writeCordsTxt(graphPanel.cords, targetFile);
                         JOptionPane.showMessageDialog(frame, "Współrzędne zostały pomyślnie zapisane!", "Sukces", JOptionPane.INFORMATION_MESSAGE);
                     } catch (Exception ex) {
                         JOptionPane.showMessageDialog(frame, "Błąd podczas zapisu pliku:\n" + ex.getMessage(), "Błąd", JOptionPane.ERROR_MESSAGE);
@@ -346,15 +301,15 @@ public class Gui {
                 }
 
                 JFileChooser fileChooser = new JFileChooser();
-                fileChooser.setCurrentDirectory(new File("."));
+                fileChooser.setCurrentDirectory(new File(".\\src\\DaneOut"));
                 fileChooser.setSelectedFile(new File("wynik_cords.txt"));
 
                 int result = fileChooser.showSaveDialog(frame);
 
                 if (result == JFileChooser.APPROVE_OPTION) {
                     File targetFile = fileChooser.getSelectedFile();
-                    try (java.io.PrintWriter writer = new java.io.PrintWriter(targetFile)) {
-                        InputOutput.wiriteCordsBinary(cords, targetFile);
+                    try {
+                        InputOutput.wiriteCordsBinary(graphPanel.cords, targetFile);
                         JOptionPane.showMessageDialog(frame, "Współrzędne zostały pomyślnie zapisane!", "Sukces", JOptionPane.INFORMATION_MESSAGE);
                     } catch (Exception ex) {
                         JOptionPane.showMessageDialog(frame, "Błąd podczas zapisu pliku:\n" + ex.getMessage(), "Błąd", JOptionPane.ERROR_MESSAGE);
@@ -373,7 +328,8 @@ public class Gui {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int numberInterationNew = IpopUpWindow("Podaj liczbę itearcji algorytmu");
-                if(numberInterationNew == 0) JOptionPane.showMessageDialog(frame, "Podano złą liczbę iteracji liczba pozostaje taka sama ", "Info", JOptionPane.INFORMATION_MESSAGE);
+                if (numberInterationNew == 0)
+                    JOptionPane.showMessageDialog(frame, "Podano złą liczbę iteracji liczba pozostaje taka sama ", "Info", JOptionPane.INFORMATION_MESSAGE);
 
                 else {
                     config.setIterations(numberInterationNew);
@@ -388,9 +344,9 @@ public class Gui {
 
                 if (Math.abs(multi) < 0.001) {
                     JOptionPane.showMessageDialog(frame, "Podana liczba: " + multi + " nie może zostać ustawiona jako stała", "Błąd", JOptionPane.INFORMATION_MESSAGE);
-                } else{
+                } else {
                     MULTIPLICTION = multi;
-                    multiplikator.setText("Mnożnik współrzędnych: "+ MULTIPLICTION);
+                    multiplikator.setText("Mnożnik współrzędnych: " + MULTIPLICTION);
                 }
             }
         });
@@ -399,7 +355,8 @@ public class Gui {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int maxXNew = IpopUpWindow("Podaj maxymalaną szerokość planszy");
-                if(maxXNew == 0) JOptionPane.showMessageDialog(frame, "Podano złą szerokość, pozostaje taka sama ", "Info", JOptionPane.INFORMATION_MESSAGE);
+                if (maxXNew == 0)
+                    JOptionPane.showMessageDialog(frame, "Podano złą szerokość, pozostaje taka sama ", "Info", JOptionPane.INFORMATION_MESSAGE);
 
                 else {
                     config.setMaxXSize(maxXNew);
@@ -412,7 +369,8 @@ public class Gui {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int maxYNew = IpopUpWindow("Podaj maxymalaną szerokość planszy");
-                if(maxYNew == 0) JOptionPane.showMessageDialog(frame, "Podano złą szerokość, pozostaje taka sama ", "Info", JOptionPane.INFORMATION_MESSAGE);
+                if (maxYNew == 0)
+                    JOptionPane.showMessageDialog(frame, "Podano złą szerokość, pozostaje taka sama ", "Info", JOptionPane.INFORMATION_MESSAGE);
 
                 else {
                     config.setMaxYSize(maxYNew);
@@ -429,7 +387,7 @@ public class Gui {
 
                 if (stalaPrzy == 0) {
                     JOptionPane.showMessageDialog(frame, "Podana liczba: " + stalaPrzy + " nie może zostać ustawiona jako stała", "Błąd", JOptionPane.INFORMATION_MESSAGE);
-                } else{
+                } else {
                     config.setHooksConst(stalaPrzy); // nie trzeba się gimnastykować już jest sprawdzanie w metodzie
                     przyciaganieFuch.setText("Stała przyciągania to: " + config.getHooksConst());
                 }
@@ -440,9 +398,9 @@ public class Gui {
             public void actionPerformed(ActionEvent e) {
                 double stalaOdp = DpopUpWindow("Podaj nową stałą odpychania");
 
-                if (stalaOdp == 0){
-                    JOptionPane.showMessageDialog(frame, "Podana liczba: "+ stalaOdp + " nie może zostać ustawiona jako stała", "Błąd", JOptionPane.INFORMATION_MESSAGE);
-                }else {
+                if (stalaOdp == 0) {
+                    JOptionPane.showMessageDialog(frame, "Podana liczba: " + stalaOdp + " nie może zostać ustawiona jako stała", "Błąd", JOptionPane.INFORMATION_MESSAGE);
+                } else {
                     config.setCoulombaConst(stalaOdp); // nie trzeba się gimnastykować już jest sprawdzanie w metodzie
                     odpychanieFuch.setText("Stała odpychania to: " + config.getCoulombaConst());
                 }
@@ -451,6 +409,47 @@ public class Gui {
 
         frame.add(toolPanel, BorderLayout.EAST);
         frame.setVisible(true);
+    }
+
+    private File choseFile() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setCurrentDirectory(new File("."));
+        int resultFileEdge = fileChooser.showOpenDialog(frame);
+        if (resultFileEdge == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            return selectedFile;
+        } else {
+            JOptionPane.showMessageDialog(frame, "Podany plik nie spełnia norm!", "Błąd", JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
+    }
+
+    private int IpopUpWindow(String message) {
+        String numberBase = JOptionPane.showInputDialog(message);
+        int number = 0;
+        try {
+            number = Integer.parseInt(numberBase.trim());
+
+            if (number <= 0) return 0;
+            else return number;
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(frame, "Podano nie prawidłowy number", "Error", JOptionPane.ERROR_MESSAGE);
+            return 0;
+        }
+
+    }
+
+    private double DpopUpWindow(String message) {
+        String numberBase = JOptionPane.showInputDialog(message);
+        double number = 0;
+        try {
+            number = Double.parseDouble(numberBase.trim());
+            return number;
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(frame, "Podano nie prawidłowy number", "Error", JOptionPane.ERROR_MESSAGE);
+            return 0;
+        }
+
     }
 
     private class GraphPanel extends JPanel {
@@ -486,7 +485,7 @@ public class Gui {
                     }
                     expectedZoom = Math.max(0.05, Math.min(expectedZoom, 3.0));
 
-                    if(expectedZoom != zoom){
+                    if (expectedZoom != zoom) {
                         zoom = expectedZoom;
 
                         offsetX = mouseX - (globalX * zoom);
@@ -497,28 +496,28 @@ public class Gui {
 
                 }
             });
-           MouseAdapter mouseAdapter = new MouseAdapter() {
+            MouseAdapter mouseAdapter = new MouseAdapter() {
                 @Override
                 public void mousePressed(MouseEvent e) {
                     lastMousePosition = e.getPoint();
                     draggedNodeId = -1;
 
-                    double mouseX = ((e.getX() - offsetX) / zoom) / MULTIPLICTION;
-                    double mouseY = ((e.getY() - offsetY) / zoom) / MULTIPLICTION;
-
+                    double mouseX = ((lastMousePosition.getX() - offsetX) / zoom) / MULTIPLICTION;
+                    double mouseY = ((lastMousePosition.getY() - offsetY) / zoom) / MULTIPLICTION;
+                    System.out.println(lastMousePosition.getX()+ " : "+lastMousePosition.getY());
                     System.out.println("Node 1: " + cords.getX(1) + ", " + cords.getY(1));
                     System.out.println("Node 5: " + cords.getX(5) + ", " + cords.getY(5));
-                    System.out.println("Node 10: " + cords.getX(10) + ", " + cords.getY(10)); 
-                    
+                    System.out.println("Node 10: " + cords.getX(10) + ", " + cords.getY(10));
+
                     for (int i = 1; i <= cords.getN(); i++) {
                         double nodeX = cords.getX(i);
                         double nodeY = cords.getY(i);
 
                         double distance = Math.sqrt(Math.pow(mouseX - nodeX, 2) + Math.pow(mouseY - nodeY, 2));
 
-                        if (distance <= (RADIUS + 15) / zoom / MULTIPLICTION) { 
+                        if (distance <= (RADIUS + 15) / MULTIPLICTION) {
                             draggedNodeId = i;
-                            break; 
+                            break;
                         }
                     }
                 }

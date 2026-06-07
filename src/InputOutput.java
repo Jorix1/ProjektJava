@@ -1,6 +1,6 @@
 import java.io.*;
-import java.security.AllPermission;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,9 +17,10 @@ public class InputOutput {
     static final String regexForExtract = "(\\w+)\\s+(\\d+)\\s+(\\d+)\\s+([-+]?\\d+(\\.\\d+)?)";
     static Pattern pattern = Pattern.compile(regexForExtract);
     static Pattern patternForNode = Pattern.compile(regexTxt);
+
     public static Graph readFileEdge(File file) throws IOException, IllegalArgumentException {
 
-        try(BufferedReader reader = new BufferedReader(new FileReader(file))){
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             Graph AllLinkedList = new Graph();
             String line;
 
@@ -29,33 +30,33 @@ public class InputOutput {
             double weight;
 
             int lineNumber = 0;
-            while((line = reader.readLine()) != null){
+            while ((line = reader.readLine()) != null) {
                 lineNumber++;
                 Matcher matcher = pattern.matcher(line);
-                if(line.trim().isEmpty())continue;
+                if (line.trim().isEmpty()) continue;
 
-                if(matcher.find()){
-                     edgeName = matcher.group(1); // regex 1-nazwa 2-node1 3-node2
-                     node1 = Integer.parseInt(matcher.group(2));
-                     node2 = Integer.parseInt(matcher.group(3));
-                     weight = Double.parseDouble(matcher.group(4));
+                if (matcher.find()) {
+                    edgeName = matcher.group(1); // regex 1-nazwa 2-node1 3-node2
+                    node1 = Integer.parseInt(matcher.group(2));
+                    node2 = Integer.parseInt(matcher.group(3));
+                    weight = Double.parseDouble(matcher.group(4));
 
-                     if(AllLinkedList.adjList.containsKey(node1)){
-                         AllLinkedList.AddElementLL(node1, node2, weight);
-                     }else{
-                         AllLinkedList.adjList.put(node1, new LinkedList<>());
-                         AllLinkedList.AddElementLL(node1, node2, weight);
-                     }
-                     if(AllLinkedList.adjList.containsKey(node2)){
-                         AllLinkedList.AddElementLL(node2, node1, weight);
-                     }else{
-                         AllLinkedList.adjList.put(node2, new LinkedList<>());
-                         AllLinkedList.AddElementLL(node2, node1, weight);
-                     }
+                    if (AllLinkedList.adjList.containsKey(node1)) {
+                        AllLinkedList.AddElementLL(node1, node2, weight);
+                    } else {
+                        AllLinkedList.adjList.put(node1, new LinkedList<>());
+                        AllLinkedList.AddElementLL(node1, node2, weight);
+                    }
+                    if (AllLinkedList.adjList.containsKey(node2)) {
+                        AllLinkedList.AddElementLL(node2, node1, weight);
+                    } else {
+                        AllLinkedList.adjList.put(node2, new LinkedList<>());
+                        AllLinkedList.AddElementLL(node2, node1, weight);
+                    }
 
 
-                }else {
-                    throw new IOException ("Not found any matches in file line number:"+lineNumber);
+                } else {
+                    throw new IOException("Not found any matches in file line number:" + lineNumber);
                 }
             }
             AllLinkedList.setNumNodes(AllLinkedList.adjList.size());
@@ -65,8 +66,8 @@ public class InputOutput {
 
     }
 
-    public static void readFileNodeTxt (File fileNodeTxt, Cords cords) throws IOException, IllegalArgumentException {
-        try(BufferedReader reader = new BufferedReader(new FileReader(fileNodeTxt))) {
+    public static void readFileNodeTxt(File fileNodeTxt, Cords cords) throws IOException, IllegalArgumentException {
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileNodeTxt))) {
 
             int Id;
             double X;
@@ -90,14 +91,15 @@ public class InputOutput {
                 } else {
                     throw new IOException("Error while loading line nubmer: " + lineNumber);
                 }
-                System.out.printf("Poprawnie odczytano: "+lineNumber+" linii");
+                System.out.printf("Poprawnie odczytano: " + lineNumber + " linii");
 
             }
 
         }
     }
+
     public static void readFileNodeBinn(File file, Cords cords) throws Exception {
-        try(DataInputStream reader = new DataInputStream(new BufferedInputStream(new FileInputStream(file)))){
+        try (DataInputStream reader = new DataInputStream(new BufferedInputStream(new FileInputStream(file)))) {
 
             int lineNumber = 0;
 
@@ -114,38 +116,40 @@ public class InputOutput {
                 cords.set(Id, X, Y);
 
             }
-            System.out.printf("Poprawnie odczytano: "+lineNumber+" linii");
-        }catch(FileNotFoundException e){
+            System.out.printf("Poprawnie odczytano: " + lineNumber + " linii");
+        } catch (FileNotFoundException e) {
             System.err.println("File not found");
         }
     }
 
-    public static void writeCordsTxt(Cords cords, File file) throws IOException{
-        try(FileWriter writer = new FileWriter(file)){
-            for(int i = 1; i <= cords.getN(); i++){
-                writer.write(i +", "+cords.getX(i)+",  "+cords.getY(i)+"\n");
+    public static void writeCordsTxt(Cords cords, File file) throws IOException {
+        try (FileWriter writer = new FileWriter(file)) {
+            for (int i = 1; i <= cords.getN(); i++) {
+                String linia = String.format(Locale.US, "%d, %.6f, %.6f\n", i, cords.getX(i), cords.getY(i));
+                writer.write(linia);
             }
             System.out.print("Poprawnie zapisano dane do pliku .txt");
 
 
-        }catch(IOException e){
+        } catch (IOException e) {
             System.err.println("Error writing output file");
         }
 
     }
-    public static void wiriteCordsBinary(Cords cords, File file) throws IOException{
-        final int NumberOfCords =  cords.getN();
+
+    public static void wiriteCordsBinary(Cords cords, File file) throws IOException {
+        final int NumberOfCords = cords.getN();
 
 
-        try(DataOutputStream writer = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(file)))){
+        try (DataOutputStream writer = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(file)))) {
 
-            for(int i = 1; i <= NumberOfCords; i++){
+            for (int i = 1; i <= NumberOfCords; i++) {
                 writer.writeInt(i);
                 writer.writeDouble(cords.getX(i));
                 writer.writeDouble(cords.getY(i));
             }
 
-        }catch(IOException e){
+        } catch (IOException e) {
             System.err.println("Error writing output file in binary");
 
         }
