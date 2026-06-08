@@ -1,4 +1,5 @@
-import java.util.*;
+import java.util.LinkedList;
+import java.util.Set;
 
 public class Tutte {
     private static final int MAX_ITERATIONS = 1000;
@@ -7,7 +8,7 @@ public class Tutte {
     public void execute(Cords cords, Graph graph, Set<Integer> fixedNodes) {
         int n = graph.getNumNodes();
         setFixedNodesOnCircle(cords, fixedNodes);
-        
+
         for (int i = 1; i <= n; i++) {
             if (!fixedNodes.contains(i)) {
                 cords.set(i, 0.0, 0.0);
@@ -16,7 +17,7 @@ public class Tutte {
 
         for (int iter = 0; iter < MAX_ITERATIONS; iter++) {
             double maxChangeSq = 0;
-            
+
             for (int u = 1; u <= n; u++) {
                 if (fixedNodes.contains(u)) continue;
 
@@ -53,20 +54,21 @@ public class Tutte {
                 }
             } // Koniec pętli for (u = 1; u <= n)
 
-            
+
             if (maxChangeSq < TOLERANCE_SQ) {
                 break;
             }
         } // Koniec pętli for (iter)
     }
-    private void setFixedNodesOnCircle(Cords cords, Set<Integer> fixed){
-        double radius =300;
-        int m = fixed.size();
-        if(m==0) return;
 
-        double angleStep = 2.0 * Math.PI/m;
-        int i =0;
-        for(Integer node : fixed){
+    private void setFixedNodesOnCircle(Cords cords, Set<Integer> fixed) {
+        double radius = 300;
+        int m = fixed.size();
+        if (m == 0) return;
+
+        double angleStep = 2.0 * Math.PI / m;
+        int i = 0;
+        for (Integer node : fixed) {
             double angle = i * angleStep;
             cords.set(node, radius * Math.cos(angle), radius * Math.sin(angle));
             i++;

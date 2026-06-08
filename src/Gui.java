@@ -17,7 +17,19 @@ public class Gui {
     GraphPanel graphPanel;
     private double MULTIPLICTION = 1;
 
+    private String InputFilePath = ".\\src\\DaneIn";
+    private String OutputFilePath = ".\\src\\DaneOut";
+
+    private Cords cords;
+    private Graph graph;
+    private Config config;
+
     public Gui(Cords cords, Graph graph, Config config) {
+
+        this.cords = cords;
+        this.graph = graph;
+        this.config = config;
+
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         frame = new JFrame("Graph View");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -69,7 +81,7 @@ public class Gui {
 
         frame.setJMenuBar(menuBar);
 
-        graphPanel = new GraphPanel(cords, graph);
+        graphPanel = new GraphPanel();
         frame.add(graphPanel, BorderLayout.CENTER);
 
 
@@ -127,19 +139,19 @@ public class Gui {
                     fixedNodes.add(2);
                     fixedNodes.add(3);
                     fixedNodes.add(4);
-                    tutteAlgo.execute(graphPanel.cords, graphPanel.graph, fixedNodes);
+                    tutteAlgo.execute(Gui.this.cords, Gui.this.graph, fixedNodes);
 
                 } else if ("Fruchterman-Reingold".equals(wybranyAlgo)) {
                     System.out.println("Odpalam Fruchterman-Reingold...");
                     FuchterMann fuchterAlgo = new FuchterMann(config);
 
 
-                    fuchterAlgo.executeAlgo(graphPanel.cords, graphPanel.graph);
+                    fuchterAlgo.executeAlgo(Gui.this.cords, Gui.this.graph);
 
                 } else if ("Spectral Algorithm".equals(wybranyAlgo)) {
                     System.out.println("Odplama Spectral...");
                     Spectral specAlgo = new Spectral(config.getIterations(), config.getMaxXSize(), config.getMaxYSize());
-                    specAlgo.executeAlgo(graphPanel.cords, graphPanel.graph);
+                    specAlgo.executeAlgo(Gui.this.cords, Gui.this.graph);
 
                 }
                 graphPanel.repaint();
@@ -180,9 +192,9 @@ public class Gui {
                     try {
                         Graph nowyGraph = InputOutput.readFileEdge(selectedFile);
 
-                        graphPanel.graph = nowyGraph;
+                        Gui.this.graph = nowyGraph;
 
-                        graphPanel.cords = new Cords(nowyGraph.getNumNodes());
+                        Gui.this.cords = new Cords(nowyGraph.getNumNodes());
 
                         graphPanel.repaint();
 
@@ -203,20 +215,20 @@ public class Gui {
                 try {
                     JOptionPane.showMessageDialog(frame, "Podaj plik z krawędziami", "Wczytaj", JOptionPane.INFORMATION_MESSAGE);
 
-                    File selectedFile = choseFile();
+                    File selectedFile = choseFile(InputFilePath);
 
                     if (selectedFile == null) return;
                     Graph nowyGraph = InputOutput.readFileEdge(selectedFile);
-                    graphPanel.graph = nowyGraph;
+                    Gui.this.graph = nowyGraph;
 
                     JOptionPane.showMessageDialog(frame, "Podaj plik z wierzchołkami format Txt", "Wczytaj", JOptionPane.INFORMATION_MESSAGE);
 
-                    selectedFile = choseFile();
+                    selectedFile = choseFile(OutputFilePath);
                     System.out.println(selectedFile);
                     if (selectedFile == null) return;
                     Cords nowyCords = new Cords(nowyGraph.getNumNodes());
                     InputOutput.readFileNodeTxt(selectedFile, nowyCords);
-                    graphPanel.cords = nowyCords;
+                    Gui.this.cords = nowyCords;
 
 
                     JOptionPane.showMessageDialog(frame, "Pomyślnie wczytano graf!", "Sukces", JOptionPane.INFORMATION_MESSAGE);
@@ -237,20 +249,20 @@ public class Gui {
                 try {
                     JOptionPane.showMessageDialog(frame, "Podaj plik z krawędziami", "Wczytaj", JOptionPane.INFORMATION_MESSAGE);
 
-                    File selectedFile = choseFile();
+                    File selectedFile = choseFile(InputFilePath);
 
                     if (selectedFile == null) return;
                     Graph nowyGraph = InputOutput.readFileEdge(selectedFile);
-                    graphPanel.graph = nowyGraph;
+                    Gui.this.graph = nowyGraph;
 
                     JOptionPane.showMessageDialog(frame, "Podaj plik z wierzchołakmi format Bin", "Wczytaj", JOptionPane.INFORMATION_MESSAGE);
 
-                    selectedFile = choseFile();
+                    selectedFile = choseFile(OutputFilePath);
                     System.out.println(selectedFile);
                     if (selectedFile == null) return;
                     Cords nowyCords = new Cords(nowyGraph.getNumNodes());
                     InputOutput.readFileNodeBinn(selectedFile, nowyCords);
-                    graphPanel.cords = nowyCords;
+                    Gui.this.cords = nowyCords;
 
 
                     JOptionPane.showMessageDialog(frame, "Pomyślnie wczytano graf!", "Sukces", JOptionPane.INFORMATION_MESSAGE);
@@ -267,7 +279,7 @@ public class Gui {
         zapiszWynikTxt.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (graphPanel.cords == null || graphPanel.cords.getN() == 0) {
+                if (Gui.this.cords == null || Gui.this.cords.getN() == 0) {
                     JOptionPane.showMessageDialog(frame, "Brak współrzędnych do zapisania!", "Błąd", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
@@ -281,7 +293,7 @@ public class Gui {
                 if (result == JFileChooser.APPROVE_OPTION) {
                     File targetFile = fileChooser.getSelectedFile();
                     try {
-                        InputOutput.writeCordsTxt(graphPanel.cords, targetFile);
+                        InputOutput.writeCordsTxt(Gui.this.cords, targetFile);
                         JOptionPane.showMessageDialog(frame, "Współrzędne zostały pomyślnie zapisane!", "Sukces", JOptionPane.INFORMATION_MESSAGE);
                     } catch (Exception ex) {
                         JOptionPane.showMessageDialog(frame, "Błąd podczas zapisu pliku:\n" + ex.getMessage(), "Błąd", JOptionPane.ERROR_MESSAGE);
@@ -295,7 +307,7 @@ public class Gui {
         zapiszWynikBin.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (graphPanel.cords == null || graphPanel.cords.getN() == 0) {
+                if (Gui.this.cords == null || Gui.this.cords.getN() == 0) {
                     JOptionPane.showMessageDialog(frame, "Brak współrzędnych do zapisania!", "Błąd", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
@@ -309,7 +321,7 @@ public class Gui {
                 if (result == JFileChooser.APPROVE_OPTION) {
                     File targetFile = fileChooser.getSelectedFile();
                     try {
-                        InputOutput.wiriteCordsBinary(graphPanel.cords, targetFile);
+                        InputOutput.wiriteCordsBinary(Gui.this.cords, targetFile);
                         JOptionPane.showMessageDialog(frame, "Współrzędne zostały pomyślnie zapisane!", "Sukces", JOptionPane.INFORMATION_MESSAGE);
                     } catch (Exception ex) {
                         JOptionPane.showMessageDialog(frame, "Błąd podczas zapisu pliku:\n" + ex.getMessage(), "Błąd", JOptionPane.ERROR_MESSAGE);
@@ -411,9 +423,9 @@ public class Gui {
         frame.setVisible(true);
     }
 
-    private File choseFile() {
+    private File choseFile(String inOrOut) {
         JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setCurrentDirectory(new File("."));
+        fileChooser.setCurrentDirectory(new File(inOrOut));
         int resultFileEdge = fileChooser.showOpenDialog(frame);
         if (resultFileEdge == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
@@ -453,17 +465,15 @@ public class Gui {
     }
 
     private class GraphPanel extends JPanel {
-        Cords cords;
-        Graph graph;
+
         private Point lastMousePosition;
         private double zoom = 1.0;
         private double offsetX = 0.0;
         private double offsetY = 0.0;
         private int draggedNodeId = -1;
 
-        GraphPanel(Cords cords, Graph graph) {
-            this.cords = cords;
-            this.graph = graph;
+        GraphPanel() {
+
             setBackground(Color.white);
 
             addMouseWheelListener(new MouseWheelListener() {
@@ -497,47 +507,47 @@ public class Gui {
                 }
             });
             MouseAdapter mouseAdapter = new MouseAdapter() {
-               @Override
-            public void mousePressed(MouseEvent e) {
-                lastMousePosition = e.getPoint();
-                draggedNodeId = -1;
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    lastMousePosition = e.getPoint();
+                    draggedNodeId = -1;
 
-                double mouseX = (e.getX() - offsetX) / zoom / MULTIPLICTION;
-                double mouseY = (e.getY() - offsetY) / zoom / MULTIPLICTION;
+                    double mouseX = (e.getX() - offsetX) / zoom / MULTIPLICTION;
+                    double mouseY = (e.getY() - offsetY) / zoom / MULTIPLICTION;
 
-                for (int i = 1; i <= GraphPanel.this.cords.getN(); i++) {
-                        double nodeX = GraphPanel.this.cords.getX(i);
-                        double nodeY = GraphPanel.this.cords.getY(i);
+                    for (int i = 1; i <= Gui.this.cords.getN(); i++) {
+                        double nodeX = Gui.this.cords.getX(i);
+                        double nodeY = Gui.this.cords.getY(i);
                         double distance = Math.sqrt(Math.pow(mouseX - nodeX, 2) + Math.pow(mouseY - nodeY, 2));
                         double hitRadius = (RADIUS + 10) / zoom / MULTIPLICTION;
 
-                    if (distance <= hitRadius) {
-                         draggedNodeId = i;
+                        if (distance <= hitRadius) {
+                            draggedNodeId = i;
                             break;
-        }
-    }
-}
-
-            @Override
-            public void mouseDragged(MouseEvent e) {
-                if (lastMousePosition == null) return;
-
-                int dx = e.getX() - lastMousePosition.x;
-                int dy = e.getY() - lastMousePosition.y;
-
-                if (draggedNodeId != -1) {
-                double changeX = dx / zoom / MULTIPLICTION;
-                double changeY = dy / zoom / MULTIPLICTION;
-
-                GraphPanel.this.cords.setX(draggedNodeId, GraphPanel.this.cords.getX(draggedNodeId) + changeX);
-                GraphPanel.this.cords.setY(draggedNodeId, GraphPanel.this.cords.getY(draggedNodeId) + changeY);
-                } else {
-                    offsetX += dx;
-                    offsetY += dy;
                         }
+                    }
+                }
 
-                lastMousePosition = e.getPoint();
-                repaint();
+                @Override
+                public void mouseDragged(MouseEvent e) {
+                    if (lastMousePosition == null) return;
+
+                    int dx = e.getX() - lastMousePosition.x;
+                    int dy = e.getY() - lastMousePosition.y;
+
+                    if (draggedNodeId != -1) {
+                        double changeX = dx / zoom / MULTIPLICTION;
+                        double changeY = dy / zoom / MULTIPLICTION;
+
+                        Gui.this.cords.setX(draggedNodeId, Gui.this.cords.getX(draggedNodeId) + changeX);
+                        Gui.this.cords.setY(draggedNodeId, Gui.this.cords.getY(draggedNodeId) + changeY);
+                    } else {
+                        offsetX += dx;
+                        offsetY += dy;
+                    }
+
+                    lastMousePosition = e.getPoint();
+                    repaint();
                 }
 
                 @Override
