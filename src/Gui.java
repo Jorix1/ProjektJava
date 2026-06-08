@@ -497,51 +497,47 @@ public class Gui {
                 }
             });
             MouseAdapter mouseAdapter = new MouseAdapter() {
-                @Override
-                public void mousePressed(MouseEvent e) {
-                    lastMousePosition = e.getPoint();
-                    draggedNodeId = -1;
+               @Override
+            public void mousePressed(MouseEvent e) {
+                lastMousePosition = e.getPoint();
+                draggedNodeId = -1;
 
-                    double mouseX = ((lastMousePosition.getX() - offsetX) / zoom) / MULTIPLICTION;
-                    double mouseY = ((lastMousePosition.getY() - offsetY) / zoom) / MULTIPLICTION;
-                    System.out.println(lastMousePosition.getX()+ " : "+lastMousePosition.getY());
-                    System.out.println("Node 1: " + cords.getX(1) + ", " + cords.getY(1));
-                    System.out.println("Node 5: " + cords.getX(5) + ", " + cords.getY(5));
-                    System.out.println("Node 10: " + cords.getX(10) + ", " + cords.getY(10));
+                double mouseX = (e.getX() - offsetX) / zoom / MULTIPLICTION;
+                double mouseY = (e.getY() - offsetY) / zoom / MULTIPLICTION;
 
-                    for (int i = 1; i <= cords.getN(); i++) {
-                        double nodeX = cords.getX(i);
-                        double nodeY = cords.getY(i);
-
+                for (int i = 1; i <= GraphPanel.this.cords.getN(); i++) {
+                        double nodeX = GraphPanel.this.cords.getX(i);
+                        double nodeY = GraphPanel.this.cords.getY(i);
                         double distance = Math.sqrt(Math.pow(mouseX - nodeX, 2) + Math.pow(mouseY - nodeY, 2));
+                        double hitRadius = (RADIUS + 10) / zoom / MULTIPLICTION;
 
-                        if (distance <= (RADIUS + 15) / MULTIPLICTION) {
-                            draggedNodeId = i;
+                    if (distance <= hitRadius) {
+                         draggedNodeId = i;
                             break;
+        }
+    }
+}
+
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                if (lastMousePosition == null) return;
+
+                int dx = e.getX() - lastMousePosition.x;
+                int dy = e.getY() - lastMousePosition.y;
+
+                if (draggedNodeId != -1) {
+                double changeX = dx / zoom / MULTIPLICTION;
+                double changeY = dy / zoom / MULTIPLICTION;
+
+                GraphPanel.this.cords.setX(draggedNodeId, GraphPanel.this.cords.getX(draggedNodeId) + changeX);
+                GraphPanel.this.cords.setY(draggedNodeId, GraphPanel.this.cords.getY(draggedNodeId) + changeY);
+                } else {
+                    offsetX += dx;
+                    offsetY += dy;
                         }
-                    }
-                }
 
-                @Override
-                public void mouseDragged(MouseEvent e) {
-                    if (lastMousePosition == null) return;
-
-                    int dx = e.getPoint().x - lastMousePosition.x;
-                    int dy = e.getPoint().y - lastMousePosition.y;
-
-                    if (draggedNodeId != -1) {
-                        double changeX = (dx / zoom) / MULTIPLICTION;
-                        double changeY = (dy / zoom) / MULTIPLICTION;
-
-                        cords.setX(draggedNodeId, cords.getX(draggedNodeId) + changeX);
-                        cords.setY(draggedNodeId, cords.getY(draggedNodeId) + changeY);
-                    } else {
-                        offsetX += dx;
-                        offsetY += dy;
-                    }
-
-                    lastMousePosition = e.getPoint();
-                    repaint();
+                lastMousePosition = e.getPoint();
+                repaint();
                 }
 
                 @Override
